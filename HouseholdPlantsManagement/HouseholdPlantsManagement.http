@@ -1,0 +1,6 @@
+@HouseholdPlantsManagement_HostAddress = http://localhost:5210
+
+GET {{HouseholdPlantsManagement_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
