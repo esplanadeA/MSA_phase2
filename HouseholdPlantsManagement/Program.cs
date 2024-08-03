@@ -1,9 +1,34 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register the DbContext in Program.cs:
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<PlantContext>(options =>
+        options.UseInMemoryDatabase("Plant"));
+}
+else
+{
+    builder.Services.AddDbContext<PlantContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("PlantContext") 
+            ?? throw new InvalidOperationException("Connection string 'PlantContext' not found.")));
+}
+
+// Register the repository in Program.cs:
+builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 
 var app = builder.Build();
 

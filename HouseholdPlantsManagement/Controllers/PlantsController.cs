@@ -1,35 +1,32 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using HouseholdPlantsManagement.Models;
+using HouseholdPlantsManagement.Repositories;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HouseholdPlantsManagement.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class PlantsController : ControllerBase
+    [Route("[controller]")]
+    public class PlantController : ControllerBase
     {
-        private readonly PlantsContext _context;
+        private readonly IPlantRepository _plantRepository;
 
-        public PlantsController(PlantsContext context)
+        public PlantController(IPlantRepository plantRepository)
         {
-            _context = context;
+            _plantRepository = plantRepository;
         }
 
-        // GET: api/plants
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Plant>>> GetPlants()
+        public async Task<IEnumerable<Plant>> GetPlants()
         {
-            return await _context.Plants.ToListAsync();
+            return await _plantRepository.GetAllPlantsAsync();
         }
 
-        // GET: api/plants/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Plant>> GetPlant(int id)
         {
-            var plant = await _context.Plants.FindAsync(id);
+            var plant = await _plantRepository.GetPlantByIdAsync(id);
 
             if (plant == null)
             {
@@ -39,65 +36,30 @@ namespace HouseholdPlantsManagement.Controllers
             return plant;
         }
 
-        // POST: api/plants
         [HttpPost]
-        public async Task<ActionResult<Plant>> PostPlant(Plant plant)
+        public async Task<ActionResult<Plant>> AddPlant(Plant plant)
         {
-            _context.Plants.Add(plant);
-            await _context.SaveChangesAsync();
-
+            await _plantRepository.AddPlantAsync(plant);
             return CreatedAtAction(nameof(GetPlant), new { id = plant.Id }, plant);
         }
 
-        // PUT: api/plants/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlant(int id, Plant plant)
+        public async Task<IActionResult> UpdatePlant(int id, Plant plant)
         {
             if (id != plant.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(plant).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PlantExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _plantRepository.UpdatePlantAsync(plant);
             return NoContent();
         }
 
-        // DELETE: api/plants/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePlant(int id)
         {
-            var plant = await _context.Plants.FindAsync(id);
-            if (plant == null)
-            {
-                return NotFound();
-            }
-
-            _context.Plants.Remove(plant);
-            await _context.SaveChangesAsync();
-
+            await _plantRepository.DeletePlantAsync(id);
             return NoContent();
-        }
-
-        private bool PlantExists(int id)
-        {
-            return _context.Plants.Any(e => e.Id == id);
         }
     }
 }

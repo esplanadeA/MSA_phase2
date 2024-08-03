@@ -1,6 +1,3 @@
-
-using System;
-
 namespace HouseholdPlantsManagement.Models
 {
     public class Plant
