@@ -1,12 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using HouseholdPlantsManagement.Models;
 
-public class PlantContext : DbContext
+namespace HouseholdPlantsManagement.Models
 {
-    public PlantContext(DbContextOptions<PlantContext> options)
-        : base(options)
+    public class PlantContext : DbContext
     {
-    }
+        public PlantContext(DbContextOptions<PlantContext> options) : base(options) { }
 
-    public DbSet<Plant> Plants { get; set; } = default!;
+        public DbSet<Plant> Plants { get; set; }
+    }
 }
