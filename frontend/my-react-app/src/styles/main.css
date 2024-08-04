@@ -1,0 +1,13 @@
+/* src/styles/main.css */
+body {
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #333;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
