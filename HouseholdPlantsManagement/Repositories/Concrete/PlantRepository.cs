@@ -1,10 +1,12 @@
+using HouseholdPlantsManagement.Context;
+using HouseholdPlantsManagement.Models;
+using HouseholdPlantsManagement.Repositories.Abstract;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HouseholdPlantsManagement.Models;
-using Microsoft.EntityFrameworkCore;
 
-namespace HouseholdPlantsManagement.Repositories
+namespace HouseholdPlantsManagement.Repositories.Concrete
 {
     public class PlantRepository : IPlantRepository
     {
@@ -20,7 +22,7 @@ namespace HouseholdPlantsManagement.Repositories
             return await _context.Plants.ToListAsync();
         }
 
-        public async Task<Plant> GetPlantByIdAsync(int id)
+        public async Task<Plant?> GetPlantByIdAsync(int id)
         {
             return await _context.Plants.FindAsync(id);
         }

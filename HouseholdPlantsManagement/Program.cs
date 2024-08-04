@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using HouseholdPlantsManagement.Models;
-using HouseholdPlantsManagement.Repositories;
-
+using HouseholdPlantsManagement.Context;
+using HouseholdPlantsManagement.Repositories.Abstract;
+using HouseholdPlantsManagement.Repositories.Concrete;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,38 +16,37 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:5001")
+        policy.AllowAnyOrigin()
               .AllowAnyHeader()
               .AllowAnyMethod(); 
     });
 });
 
-// ADDING HTTP
+// HTTPS Redirection
 builder.Services.AddHttpsRedirection(options =>
 {
     options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-    options.HttpsPort = 5001; 
+    options.HttpsPort = 5001;
 });
 
-
+// Configure DbContext
 builder.Services.AddDbContext<PlantContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PlantDatabase")));
+    options.UseSqlite("Data Source=plant.db"));
 
+// Register Repositories
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 
-// Add Swagger 
+// Add Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// pipeline.
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-
-    // middleware 
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "HouseholdPlantsManagement API V1");
@@ -61,9 +60,10 @@ else
 }
 
 app.UseHttpsRedirection();
-app.UseCors(); 
+app.UseCors();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();

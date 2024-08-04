@@ -1,5 +1,5 @@
 using HouseholdPlantsManagement.Models;
-using HouseholdPlantsManagement.Repositories;
+using HouseholdPlantsManagement.Repositories.Abstract; // Ensure this is the correct namespace
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace HouseholdPlantsManagement.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class PlantController : ControllerBase
     {
         private readonly IPlantRepository _plantRepository;
