@@ -1,33 +1,30 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System;
+using HouseholdPlantsManagement.Models;
+using HouseholdPlantsManagement.Repositories;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 
-// Register the DbContext in Program.cs:
-if (builder.Environment.IsDevelopment())
+// ADDING HTTP
+builder.Services.AddHttpsRedirection(options =>
 {
-    builder.Services.AddDbContext<PlantContext>(options =>
-        options.UseInMemoryDatabase("Plant"));
-}
-else
-{
-    builder.Services.AddDbContext<PlantContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("PlantContext") 
-            ?? throw new InvalidOperationException("Connection string 'PlantContext' not found.")));
-}
+    options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+    options.HttpsPort = 5001; // Ensure this matches the port in launchSettings.json
+});
 
-// Register the repository in Program.cs:
+// Configure the database context to use an in-memory database for development.
+// Replace with UseSqlServer or another database provider in production.
+builder.Services.AddDbContext<PlantContext>(options =>
+    options.UseInMemoryDatabase("PlantDB"));
+
+// Register the repository with dependency injection.
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 
 var app = builder.Build();
@@ -35,35 +32,29 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    // In production, configure exception handling, security headers, etc.
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
 
+// Enable HTTPS redirection
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// Serve static files (if you have any)
+app.UseStaticFiles();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+// Configure routing
+app.UseRouting();
 
+// Enable authorization (if you have any policies or authentication)
+app.UseAuthorization();
+
+// Map controller routes
+app.MapControllers();
+
+// Run the application
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
