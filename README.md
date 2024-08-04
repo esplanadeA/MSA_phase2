@@ -28,7 +28,7 @@ Welcome to the Household Plants Management App! This application allows users to
 1. **Clone the repository**:
 
    ```sh
-   git clone 
+   git clone https://github.com/esplanadeA/MSA_phase2.git
 
 2. **Install frontend dependencies:**
 
