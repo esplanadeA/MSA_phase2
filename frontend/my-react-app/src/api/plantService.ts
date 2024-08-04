@@ -1,7 +1,7 @@
 // src/api/plantService.ts
 import { Plant } from '../models/Plant';
 
-const API_URL = 'http://localhost:5006/Plant'; // This is where you define the API URL
+const API_URL = 'http://localhost:5001/api/Plant'; // This is where you define the API URL
 
 export const fetchPlants = async (): Promise<Plant[]> => {
   const response = await fetch(API_URL);

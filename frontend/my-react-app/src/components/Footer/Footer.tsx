@@ -1,8 +1,7 @@
 // src/components/Footer/Footer.tsx
 import React from 'react';
 import { Typography } from '@mui/material';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-import { StyledFooter, NavList, NavItem } from './FooterStyles';
+import { StyledFooter } from './FooterStyles';
 
 const Footer: React.FC = () => {
   return (
