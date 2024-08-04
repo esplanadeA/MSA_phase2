@@ -28,38 +28,38 @@ Welcome to the Household Plants Management App! This application allows users to
 1. **Clone the repository**:
 
    ```sh
-   git clone https://github.com/yourusername/househol
+   git clone 
 
-2. **Install frontend dependencies:
+2. **Install frontend dependencies:**
 
-sh
-Copy code
-cd client
-npm install
-
-
-3 **Install backend dependencies:
-
-sh
-Copy code
-cd ../server
-dotnet restore
-Running the Application
+      ```sh
+      Copy code
+      cd client
+      npm install
 
 
-4 **Start the backend server:
+3. **Install backend dependencies:**
 
-sh
-Copy code
-cd server
-dotnet run
-The backend server will start at https://localhost:5001.
+      ```sh
+      Copy code
+      cd ../server
+      dotnet restore
+      Running the Application
 
-5 **Start the frontend server:
 
-sh
-Copy code
-cd client
-npm start
+4. **Start the backend server:**
 
-The frontend will start at http://localhost:5173
+      ```sh
+      Copy code
+      cd server
+      dotnet run
+      The backend server will start at https://localhost:5001.
+
+5. **Start the frontend server:**
+
+         ```sh
+         Copy code
+         cd client
+         npm start
+
+         The frontend will start at http://localhost:5173
