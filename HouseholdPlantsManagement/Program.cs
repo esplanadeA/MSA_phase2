@@ -9,40 +9,34 @@ using HouseholdPlantsManagement.Repositories.Concrete;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod(); 
+        policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+            .AllowAnyHeader()
+            .AllowAnyOrigin(); // For localhost only. Allow all
     });
 });
 
-// HTTPS Redirection
 builder.Services.AddHttpsRedirection(options =>
 {
     options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
     options.HttpsPort = 5001;
 });
 
-// Configure DbContext
 builder.Services.AddDbContext<PlantContext>(options =>
     options.UseSqlite("Data Source=plant.db"));
 
-// Register Repositories
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 
-// Add Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
