@@ -12,6 +12,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // ADDING HTTP
 builder.Services.AddHttpsRedirection(options =>
 {
@@ -26,6 +36,10 @@ builder.Services.AddDbContext<PlantContext>(options =>
 
 // Register the repository with dependency injection.
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
+// add swagger for test
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
@@ -33,6 +47,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
+     app.UseSwagger();
+
+    // Enable middleware to serve Swagger UI.
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "HouseholdPlantsManagement API V1");
+        c.RoutePrefix = string.Empty; // To serve the Swagger UI at the app's root (http://localhost:<port>/)
+    });
 }
 else
 {
@@ -52,6 +74,7 @@ app.UseRouting();
 
 // Enable authorization (if you have any policies or authentication)
 app.UseAuthorization();
+app.UseCors();
 
 // Map controller routes
 app.MapControllers();
